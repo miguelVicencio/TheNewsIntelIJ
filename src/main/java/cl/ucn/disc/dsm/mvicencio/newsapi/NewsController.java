@@ -38,13 +38,28 @@ import java.util.List;
  */
 @RestController
 public class NewsController {
+
+    /**
+     * the repository of News
+     */
+    private final NewsRepository newsRepository;
+
+    /**
+     * the Constructor of NewsController
+     * @param newsRepository to use
+     */
+    public NewsController(NewsRepository newsRepository){
+        this.newsRepository = newsRepository;
+    }
     /**
      * @return all the news in the backend
      */
     @GetMapping("/v1/news")
     public List<News> all() {
-        return new ArrayList<>();
-
+        //Equals to select* from News
+        final List<News> theNews = this.newsRepository.findAll();
+        
+        return theNews;
     }
 
     /**
@@ -53,18 +68,9 @@ public class NewsController {
      */
     @GetMapping("/v1/news/{id}")
     public News one(@PathVariable final Long id) {
-        // FIXME: Only for test
-        News news = new News(
-                "Apoyo a los campamentos de Antofagasta",
-                "Noticias UCN",
-                "Erika Tello Bianchi",
-                "https://www.noticias.ucn.cl/columnistas/apoyo-a-los-campamentos-de-antofagasta/",
-                "https://www.noticias.ucn.cl/wp-content/uploads/2021/12/nt-campamento.jpg",
-                "Aquello ha quedado impreso en los corazones de nuestros voluntarios y voluntarias y académicos y profesionales: dejar la confortabilidad del espacio universitario e ir en pos de los nuevos vecinos que se allegan al hogar de la antofagastinidad",
-                "El pasado domingo 28 de noviembre inauguramos la sede comunitaria del campamento Nuevo Sol Naciente de Antofagasta, en una jornada esplendorosa coronada por el Astro Rey. Parecía que la principal estrella de nuestra galaxia mostraba el sendero a los habitantes del asentamiento hacia una vida más próspera, satisfactoria en sus anhelos, que cubriera los sueños de sus moradores en este espacio de fraternidad, enseñando valores compartidos.",
-                ZonedDateTime.now(ZoneId.of("-4"))
-        );
-        return news;
+        // FIXME: Change the runtimeException to 404.
+        return this.newsRepository.findById(id).orElseThrow(()-> new RuntimeException("News Not Found:("));
     }
+
 
 }
